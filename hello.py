@@ -27,7 +27,7 @@ __licence__ = "Unlicense"
 import os
 import sys
 
-print(f"{sys.argv=}")
+# print(f"{sys.argv=}")
 args = {
     "lang": None,
     "count": 1,
@@ -36,7 +36,17 @@ args = {
 for arg in sys.argv[1:]:
 
     # TODO: need refactoring for ValueErro
-    key, value = arg.split("=")
+    try:
+        key, value = arg.split("=")
+    except ValueError as e:
+        # TODO: Logging
+        print(f"[ERROR] {str(e)}")
+        print("You need to use `=`")
+        print(f"You passed {arg}")
+        print("Try with --key=value e.x: --lang=es_SP")
+        sys.exit(1)
+
+    # LBYL
     key = key.lstrip("-").strip()
     value = value.strip()
       
@@ -48,6 +58,7 @@ for arg in sys.argv[1:]:
 
 # snake case: format of names vars and functions.
 current_language = args["lang"]
+print(f"{current_language=}")
 if current_language is None:
      # TODO: to use loop
     if "LANG" in os.environ:
@@ -75,7 +86,6 @@ current_language = current_language[:5]
 # sets (Hash Table) - O(1) - constant
 # dicts (Has Table)
 msg_dict = {
-    "C": "Gretting generic!",
     "en_US": "Hello, World!",
     "es_SP": "Hola, Mundo!",
     "pt_BR": "Olá, Mundo!",
@@ -83,4 +93,27 @@ msg_dict = {
     "fr_FR": "Ça va, Monde!",
 }
 
-print(f"{msg_dict[current_language]}\n" * int(args["count"]))
+
+"""
+# try with default value
+message = msg_dict.get(current_language, msg_dict["en_US"]) 
+"""
+
+"""
+# LBYL
+if current_language in msg_dict:
+    message = msg_dict[current_language]
+else:
+    print(f"Lenguage not found.\nValid languages {list(msg_dict.keys())}")
+    sys.exit(1)
+"""
+
+# EAFP
+try:
+    message = msg_dict[current_language]
+except KeyError as e:
+    print(f"[ERROR] {str(e)}")
+    print(f"Lenguage not found.\nValid languages {list(msg_dict.keys())}")
+    sys.exit(1)
+
+print(f"{message}\n" * int(args["count"]))
