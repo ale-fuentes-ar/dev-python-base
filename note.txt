@@ -1,0 +1,3 @@
+title one	tech	it is a simple note
+title two	market	need eggs
+title three	market	need milk
