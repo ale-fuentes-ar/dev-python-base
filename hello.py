@@ -26,6 +26,22 @@ __licence__ = "Unlicense"
 # built-in
 import os
 import sys
+import logging
+
+# TODO: convert setting logs in a function
+# TODO: use lib, example 'logguru'
+log_level = os.getenv("LOG_LEVEL", "WARNING").upper()
+log = logging.Logger("ale", log_level)
+ch = logging.StreamHandler()
+ch.setLevel(log_level)
+fmt = logging.Formatter(
+    '%(asctime)s %(name)s %(levelname)s '
+    'l:%(lineno)d f:%(filename)s: %(message)s'
+)
+ch.setFormatter(fmt)
+log.addHandler(ch)
+
+
 
 # print(f"{sys.argv=}")
 args = {
@@ -34,16 +50,14 @@ args = {
 }
 
 for arg in sys.argv[1:]:
-
-    # TODO: need refactoring for ValueErro
     try:
         key, value = arg.split("=")
     except ValueError as e:
-        # TODO: Logging
-        print(f"[ERROR] {str(e)}")
-        print("You need to use `=`")
-        print(f"You passed {arg}")
-        print("Try with --key=value e.x: --lang=es_SP")
+        log.error(
+            "You need to use `=` You passed %s. Try with --key=value e.x: --lang=es_SP: %s",
+            arg,
+            str(e)
+        )
         sys.exit(1)
 
     # LBYL
@@ -112,8 +126,11 @@ else:
 try:
     message = msg_dict[current_language]
 except KeyError as e:
-    print(f"[ERROR] {str(e)}")
-    print(f"Lenguage not found.\nValid languages {list(msg_dict.keys())}")
+    log.error(
+        "Lenguage not found.\nValid languages %s : %s",
+        list(msg_dict.keys()),
+        str(e)
+    )
     sys.exit(1)
 
 print(f"{message}\n" * int(args["count"]))
