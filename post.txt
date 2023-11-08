@@ -1,0 +1,8 @@
+title: my post
+tags: tech, geral
+date: 2023-11-07
+publish:1
+---
+This is my post
+Here has many histories
+thanks for read me
