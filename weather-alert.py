@@ -21,8 +21,24 @@ keys = weather.keys()
 
 while True:
 
-    if all(weather.values()): # [None, None]
+    """
+    weather = { "temperature": 0, "humidity": 0 }
+    [value for value in weather.values() if value is not None]
+    [0, 0]
+
+    weather = { "temperature": None,    "humidity": None }
+    In [12]: [value for value in weather.values() if value is not None]
+    []
+
+    """
+    info_size = len(weather.values())
+    filled_size = len([value for value in weather.values() if value is not None])
+
+    if(info_size == filled_size):
         break
+
+    # if all(weather.values()): # [None, None]
+    #     break
 
     for key in keys:
         try:
